@@ -103,18 +103,20 @@ function Picker() {
 }
 export default function App() {
   return (
-    <>
-      <Canvas concurrent pixelRatio={[1, 1]} camera={{ position: [1, 1, 2.75] }}>
-        <ambientLight intensity={0.3} />
-        <spotLight intensity={0.3} angle={0.1} penumbra={1} position={[5, 25, 20]} />
-        <Suspense fallback={null}>
-          <Model />
-          <Environment files="royal_esplanade_1k.hdr" />
-          <ContactShadows rotation-x={Math.PI / 2} position={[0, -0.8, 0]} opacity={0.25} width={10} height={10} blur={2} far={1} />
-        </Suspense>
-        <OrbitControls enableZoom={false} enablePan={false} />
-      </Canvas>
-      <Picker />
-    </>
+    <div id="boilerPlate">
+      <div id="inner">
+        <Canvas concurrent pixelRatio={[1, 1]} camera={{ position: [1, 1, 2.75] }}>
+          <ambientLight intensity={0.3} />
+          <spotLight intensity={0.3} angle={0.1} penumbra={1} position={[5, 25, 20]} />
+          <Suspense fallback={null}>
+            <Model />
+            <Environment files="royal_esplanade_1k.hdr" />
+            <ContactShadows rotation-x={Math.PI / 2} position={[0, -0.8, 0]} opacity={0.25} width={10} height={10} blur={2} far={1} />
+          </Suspense>
+          <OrbitControls enableZoom={true} zoomSpeed={0.2} enablePan={false} />
+        </Canvas>
+        <Picker />
+      </div>
+    </div>
   )
 }
