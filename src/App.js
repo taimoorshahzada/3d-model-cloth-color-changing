@@ -3,39 +3,28 @@ import { Canvas, useFrame } from "react-three-fiber"
 import { ContactShadows, Environment, useGLTF, OrbitControls } from "drei"
 import { HexColorPicker } from "react-colorful"
 import { proxy, useProxy } from "valtio"
-
-// Using a Valtio state model to bridge reactivity between
-// the canvas and the dom, both can write to it and/or react to it.
 const state = proxy({
   current: null,
   items: {
-    laces: "#ffffff",
-    mesh: "#ffffff",
-    caps: "#ffffff",
-    inner: "#ffffff",
-    sole: "#ffffff",
-    stripes: "#ffffff",
-    band: "#ffffff",
-    patch: "#ffffff",
+    Cotton_Sateen_FRONT_412320: "#ffffff",
   },
 })
-
-function Shoe() {
+function Model({ ...props }) {
   const ref = useRef()
   const snap = useProxy(state)
   // Drei's useGLTF hook sets up draco automatically, that's how it differs from useLoader(GLTFLoader, url)
   // { nodes, materials } are extras that come from useLoader, these do not exist in threejs/GLTFLoader
   // nodes is a named collection of meshes, materials a named collection of materials
-  const { nodes, materials } = useGLTF("shoe-draco.glb")
+  const { nodes, materials } = useGLTF("/model.glb")
 
   // Animate model
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime()
-    ref.current.rotation.z = -0.2 - (1 + Math.sin(t / 1.5)) / 20
-    ref.current.rotation.x = Math.cos(t / 4) / 8
-    ref.current.rotation.y = Math.sin(t / 4) / 8
-    ref.current.position.y = (1 + Math.sin(t / 1.5)) / 10
-  })
+  // useFrame((state) => {
+  //   const t = state.clock.getElapsedTime()
+  //   ref.current.rotation.z = -0.2 - (1 + Math.sin(t / 1.5)) / 20
+  //   ref.current.rotation.x = Math.cos(t / 4) / 8
+  //   ref.current.rotation.y = Math.sin(t / 4) / 8
+  //   ref.current.position.y = (1 + Math.sin(t / 1.5)) / 10
+  // })
 
   // Cursor showing current color
   const [hovered, set] = useState(null)
@@ -45,27 +34,64 @@ function Shoe() {
     document.body.style.cursor = `url('data:image/svg+xml;base64,${btoa(hovered ? cursor : auto)}'), auto`
   }, [hovered])
 
-  // Using the GLTFJSX output here to wire in app-state and hook up events
   return (
     <group
       ref={ref}
+      {...props}
       dispose={null}
       onPointerOver={(e) => (e.stopPropagation(), set(e.object.material.name))}
       onPointerOut={(e) => e.intersections.length === 0 && set(null)}
       onPointerMissed={() => (state.current = null)}
       onPointerDown={(e) => (e.stopPropagation(), (state.current = e.object.material.name))}>
-      <mesh geometry={nodes.shoe.geometry} material={materials.laces} material-color={snap.items.laces} />
-      <mesh geometry={nodes.shoe_1.geometry} material={materials.mesh} material-color={snap.items.mesh} />
-      <mesh geometry={nodes.shoe_2.geometry} material={materials.caps} material-color={snap.items.caps} />
-      <mesh geometry={nodes.shoe_3.geometry} material={materials.inner} material-color={snap.items.inner} />
-      <mesh geometry={nodes.shoe_4.geometry} material={materials.sole} material-color={snap.items.sole} />
-      <mesh geometry={nodes.shoe_5.geometry} material={materials.stripes} material-color={snap.items.stripes} />
-      <mesh geometry={nodes.shoe_6.geometry} material={materials.band} material-color={snap.items.band} />
-      <mesh geometry={nodes.shoe_7.geometry} material={materials.patch} material-color={snap.items.patch} />
+      <primitive object={nodes.j_c_all} />
+      <mesh
+        geometry={nodes.Cloth_mesh.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_1.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_2.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_3.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_4.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_5.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_6.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <mesh
+        geometry={nodes.Cloth_mesh_7.geometry}
+        material={materials.Cotton_Sateen_FRONT_412320}
+        material-color={snap.items.Cotton_Sateen_FRONT_412320}
+      />
+      <primitive object={nodes.body} />
+      <primitive object={nodes.eye_l} />
+      <primitive object={nodes.eye_r} />
+      <primitive object={nodes.eyelash_l} />
+      <primitive object={nodes.eyelash_r} />
     </group>
   )
 }
-
 function Picker() {
   const snap = useProxy(state)
   return (
@@ -75,19 +101,18 @@ function Picker() {
     </div>
   )
 }
-
 export default function App() {
   return (
     <>
-      <Canvas concurrent pixelRatio={[1, 1.5]} camera={{ position: [0, 0, 2.75] }}>
+      <Canvas concurrent pixelRatio={[1, 1]} camera={{ position: [1, 1, 2.75] }}>
         <ambientLight intensity={0.3} />
         <spotLight intensity={0.3} angle={0.1} penumbra={1} position={[5, 25, 20]} />
         <Suspense fallback={null}>
-          <Shoe />
+          <Model />
           <Environment files="royal_esplanade_1k.hdr" />
           <ContactShadows rotation-x={Math.PI / 2} position={[0, -0.8, 0]} opacity={0.25} width={10} height={10} blur={2} far={1} />
         </Suspense>
-        <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} enableZoom={false} enablePan={false} />
+        <OrbitControls enableZoom={false} enablePan={false} />
       </Canvas>
       <Picker />
     </>
